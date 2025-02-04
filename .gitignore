@@ -1,0 +1,58 @@
+# Simulation and build artifacts
+sim/
+build/
+*.vvp
+*.fst
+*.gtkw
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Synthesis artifacts
+syn/icebreaker/build/
+*.bit
+*.bin
+*.json
+*.asc
+!rtl/**/filelist.json
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.yml
+
+# Cocotb
+results.xml
+
+# Jupyter / IPython runtime junk
+.ipython/
+.jupyter/
+.local/
+.npm/
+
+# Docker helper scripts & local tooling
+run.sh
+docker/
+
+# Python tooling caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Venv
+venv/
+
+# Misc
+.env
+run.sh
