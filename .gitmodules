@@ -1,0 +1,3 @@
+[submodule "submodules/basejump_stl"]
+	path = submodules/basejump_stl
+	url = https://github.com/bespoke-silicon-group/basejump_stl.git
