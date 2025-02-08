@@ -1,0 +1,6 @@
+{
+  "top": "sync_ram_block",
+  "files": [
+    "sync_ram_block.sv"
+  ]
+}
