@@ -1,0 +1,9 @@
+{
+  "top": "ramdelaybuffer",
+  "files": [
+    "ramdelaybuffer.sv",
+    "../sync_ram_block/sync_ram_block.sv",
+    "../counter/counter.sv",
+    "../../submodules/imports/elastic.sv"
+  ]
+}
