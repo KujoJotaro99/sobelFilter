@@ -1,0 +1,7 @@
+{
+  "top": "rgb2gray",
+  "files": [
+    "rgb2gray.sv",
+    "../../submodules/imports/elastic.sv"
+  ]
+}
