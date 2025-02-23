@@ -1,0 +1,8 @@
+{
+  "top": "magnitude",
+  "files": [
+    "magnitude.sv",
+    "../../submodules/imports/elastic.sv",
+    "../../submodules/imports/SB_MAC16.sv"
+  ]
+}
