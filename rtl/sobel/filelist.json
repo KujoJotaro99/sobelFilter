@@ -1,0 +1,22 @@
+{
+  "top": "sobel",
+  "files": [
+    "sobel.sv",
+    "../conv2d/conv2d_box.sv",
+    "../conv2d/conv2d.sv",
+    "../ramdelaybuffer/ramdelaybuffer.sv",
+    "../sync_ram_block/sync_ram_block.sv",
+    "../counter/counter.sv",
+    "../fifo_sync/fifo_sync.sv",
+    "../rgb2gray/rgb2gray.sv",
+    "../magnitude/magnitude.sv",
+    "../../submodules/imports/elastic.sv",
+    "../../submodules/imports/sync2.sv",
+    "../../submodules/imports/SB_MAC16.sv",
+    "../../submodules/imports/axis_adapter.v",
+    "../../submodules/imports/uart.v",
+    "../../submodules/imports/uart_rx.v",
+    "../../submodules/imports/uart_tx.v",
+    "../../submodules/imports/SB_PLL40_PAD.sv"
+  ]
+}
