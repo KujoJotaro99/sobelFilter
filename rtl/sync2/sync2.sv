@@ -1,24 +1,27 @@
-/*
-  sync2.sv: two stage synchronizer module imported from CSE 225 curriculum UCSC
-*/
+`timescale 1ns/1ps
 
 module sync2 #(
-    parameter WIDTH_P = 8
-)(
-  input  logic clk_sync_i,
-  input  logic rstn_i,
-  input  logic [WIDTH_P-1:0] sync_i,
-  output logic [WIDTH_P-1:0] sync_o
+	parameter WIDTH_P = 8
+) (
+	input  logic [0:0] clk_sync_i,
+	input  logic [0:0] rstn_i,
+	input  logic [WIDTH_P-1:0] sync_i,
+	output logic [WIDTH_P-1:0] sync_o
 );
-  logic [WIDTH_P-1:0] sync_m;
 
-  always_ff @(posedge clk_sync_i) begin
-    if (!rstn_i) begin
-      sync_m <= '0;
-      sync_o <= '0;
-    end else begin
-      sync_m <= sync_i;
-      sync_o <= sync_m;
-    end
-  end
+	// this is a vivado attribute but it will be ignored for other synthesis/pnr tools
+	(* ASYNC_REG = "TRUE" *) logic [WIDTH_P-1:0] sync_q1;
+	(* ASYNC_REG = "TRUE" *) logic [WIDTH_P-1:0] sync_q2;
+
+	assign sync_o = sync_q2;
+
+	always_ff @(posedge clk_sync_i) begin
+		if (!rstn_i) begin
+			sync_q1 <= '0;
+			sync_q2 <= '0;
+		end else begin
+			sync_q1 <= sync_i;
+			sync_q2 <= sync_q1;
+		end
+	end
 endmodule
