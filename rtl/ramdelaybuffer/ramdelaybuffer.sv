@@ -18,6 +18,7 @@ module ramdelaybuffer
     output logic [WIDTH_P-1:0] data_a_o,
     output logic [WIDTH_P-1:0] data_b_o
 );
+`ifndef SYNTHESIS
     initial begin
         if (DELAY_A_P > DELAY_P) begin
             $fatal(1, "DELAY_A_P (%0d) must be <= DELAY_P (%0d)", DELAY_A_P, DELAY_P);
@@ -26,6 +27,7 @@ module ramdelaybuffer
             $fatal(1, "DELAY_B_P (%0d) must be <= DELAY_P (%0d)", DELAY_B_P, DELAY_P);
         end
     end
+`endif
 
     logic [$clog2(DELAY_P+1)-1:0] wr_addr;
     logic [$clog2(DELAY_P+1)-1:0] rd_addr_a;
@@ -70,21 +72,37 @@ module ramdelaybuffer
         .count_o(rd_addr_b)
     );
 
-    sync_ram_block #(
+    // one 1r1w ram per read tap, both written with the same stream
+    sync_ram_1r1w #(
         .WIDTH_P(WIDTH_P),
         .DEPTH_P(DELAY_P+1)
-    ) sync_ram_delay (
-        .clk_i(clk_i),
-        .rstn_i(rstn_i),
-        .data_i(data_i),
-        .wr_addr_i(wr_addr),
-        .rd_addr_a_i(rd_addr_a),
-        .rd_addr_b_i(rd_addr_b),
+    ) sync_ram_a_inst (
+        .wr_clk_i(clk_i),
+        .wr_rstn_i(rstn_i),
         .wr_en_i(valid_i & ready_o),
-        .rd_en_a_i(valid_i & ready_o),
-        .rd_en_b_i(valid_i & ready_o),
-        .data_a_o(data_a_o),
-        .data_b_o(data_b_o)
+        .wr_data_i(data_i),
+        .wr_addr_i(wr_addr),
+        .rd_clk_i(clk_i),
+        .rd_rstn_i(rstn_i),
+        .rd_en_i(valid_i & ready_o),
+        .rd_addr_i(rd_addr_a),
+        .rd_data_o(data_a_o)
+    );
+
+    sync_ram_1r1w #(
+        .WIDTH_P(WIDTH_P),
+        .DEPTH_P(DELAY_P+1)
+    ) sync_ram_b_inst (
+        .wr_clk_i(clk_i),
+        .wr_rstn_i(rstn_i),
+        .wr_en_i(valid_i & ready_o),
+        .wr_data_i(data_i),
+        .wr_addr_i(wr_addr),
+        .rd_clk_i(clk_i),
+        .rd_rstn_i(rstn_i),
+        .rd_en_i(valid_i & ready_o),
+        .rd_addr_i(rd_addr_b),
+        .rd_data_o(data_b_o)
     );
 
     elastic #(
