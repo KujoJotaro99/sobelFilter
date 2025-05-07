@@ -106,14 +106,8 @@ module conv2d_box
         .ready_i(ready_i)
     );
 
-    always_ff @(posedge clk_i) begin
-        if (!rstn_i) begin
-            gx_o <= '0;
-            gy_o <= '0;
-        end else if (valid_o & ready_i) begin
-            gx_o <= {{WIDTH_P{1'b0}}, blur_pipe};
-            gy_o <= {{WIDTH_P{1'b0}}, blur_pipe};
-        end
-    end
+    // present the blurred pixel with valid_o
+    assign gx_o = {{WIDTH_P{1'b0}}, blur_pipe};
+    assign gy_o = {{WIDTH_P{1'b0}}, blur_pipe};
 
 endmodule
