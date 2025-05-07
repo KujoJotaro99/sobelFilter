@@ -1,0 +1,10 @@
+{
+  "top": "conv2d_box",
+  "files": [
+    "conv2d_box.sv",
+    "../ramdelaybuffer/ramdelaybuffer.sv",
+    "../sync_ram_1r1w/sync_ram_1r1w.sv",
+    "../counter/counter.sv",
+    "../elastic/elastic.sv"
+  ]
+}
