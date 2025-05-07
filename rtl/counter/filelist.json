@@ -2,5 +2,9 @@
   "top": "counter",
   "files": [
     "counter.sv"
+  ],
+  "test_top": "counter_test",
+  "test_files": [
+    "counter_test.sv"
   ]
 }
