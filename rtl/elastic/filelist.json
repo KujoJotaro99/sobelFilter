@@ -1,0 +1,10 @@
+{
+  "top": "elastic",
+  "files": [
+    "elastic.sv"
+  ],
+  "test_top": "elastic_test",
+  "test_files": [
+    "elastic_test.sv"
+  ]
+}
