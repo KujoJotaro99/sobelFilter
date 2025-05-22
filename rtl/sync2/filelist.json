@@ -1,0 +1,10 @@
+{
+  "top": "sync2",
+  "files": [
+    "sync2.sv"
+  ],
+  "test_top": "sync2_test",
+  "test_files": [
+    "sync2_test.sv"
+  ]
+}
