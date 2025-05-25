@@ -1,0 +1,10 @@
+{
+  "top": "sync_ram_1r1w",
+  "files": [
+    "sync_ram_1r1w.sv"
+  ],
+  "test_top": "sync_ram_1r1w_test",
+  "test_files": [
+    "sync_ram_1r1w_test.sv"
+  ]
+}
