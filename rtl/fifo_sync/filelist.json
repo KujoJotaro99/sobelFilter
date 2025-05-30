@@ -3,5 +3,9 @@
   "files": [
     "fifo_sync.sv",
     "../sync_ram_1r1w/sync_ram_1r1w.sv"
+  ],
+  "test_top": "fifo_sync_test",
+  "test_files": [
+    "fifo_sync_test.sv"
   ]
 }
