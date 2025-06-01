@@ -2,7 +2,10 @@
   "top": "magnitude",
   "files": [
     "magnitude.sv",
-    "../elastic/elastic.sv",
-    "../../submodules/imports/SB_MAC16.sv"
+    "../elastic/elastic.sv"
+  ],
+  "test_top": "magnitude_test",
+  "test_files": [
+    "magnitude_test.sv"
   ]
 }
