@@ -3,5 +3,9 @@
   "files": [
     "rgb2gray.sv",
     "../elastic/elastic.sv"
+  ],
+  "test_top": "rgb2gray_test",
+  "test_files": [
+    "rgb2gray_test.sv"
   ]
 }

@@ -1,79 +1,50 @@
-SIM ?= icarus
-TOPLEVEL_LANG ?= verilog
-
 FILELIST_JSON := filelist.json
 
-RTL_SOURCES := $(shell python3 -c "import json; \
-    j=json.load(open('$(FILELIST_JSON)')); \
-    print(' '.join(j['files']))")
+json = $(shell python3 -c "import json; v = json.load(open('$(FILELIST_JSON)'))['$(1)']; print(' '.join(v) if isinstance(v, list) else v)")
 
-VERILOG_SOURCES := $(RTL_SOURCES)
+TOPLEVEL := $(call json,top)
+RTL_SOURCES := $(call json,files)
+TEST_TOP := $(call json,test_top)
+TEST_SOURCES := $(call json,test_files)
+SOURCES := $(addprefix ../,$(RTL_SOURCES) $(TEST_SOURCES))
 
-TOPLEVEL := $(shell python3 -c "import json; \
-    print(json.load(open('$(FILELIST_JSON)'))['top'])")
+# vcs, xrun, or questa
+SIM ?= vcs
+SEED ?= 1
 
 BUILD := build
 SYNTH_JSON := $(BUILD)/$(TOPLEVEL).json
 ICE40_JSON := $(BUILD)/$(TOPLEVEL).ice40.json
-ABSTRACT_JSON ?= $(ICE40_JSON)
-	
-MODULE := rgb2gray_test
 
-COCOTB_LOG_LEVEL ?= INFO
+.PHONY: test lint synth synth_ice40 clean
 
-COMPILE_ARGS += -g2012
-
-WAVES ?= 1
-
-# TB_SV := rgb2gray_tb.sv
-
-ifneq ($(filter sv,$(MAKECMDGOALS)),)
-    # skip cocotb include for pure SystemVerilog run
+test: | $(BUILD)
+ifeq ($(SIM),vcs)
+	cd $(BUILD) && vcs -full64 -sverilog -assert svaext -timescale=1ns/1ps -top $(TEST_TOP) $(SOURCES) -o simv
+	cd $(BUILD) && ./simv +ntb_random_seed=$(SEED)
+else ifeq ($(SIM),xrun)
+	cd $(BUILD) && xrun -sv -access +rwc -timescale 1ns/1ps -svseed $(SEED) -top $(TEST_TOP) $(SOURCES)
+else ifeq ($(SIM),questa)
+	cd $(BUILD) && vlog -sv $(SOURCES) && vsim -c -sv_seed $(SEED) $(TEST_TOP) -do "run -all; quit -f"
 else
-include $(shell cocotb-config --makefile)/Makefile.sim
+	$(error unsupported SIM=$(SIM), use vcs, xrun, or questa)
 endif
 
-.PHONY: clean
-clean::
-	rm -rf sim_build __pycache__ .pytest_cache *.pyc *.vcd *.fst results.xml sim_sv build
-
-
 lint:
-	verilator --lint-only $(RTL_SOURCES) --top-module $(TOPLEVEL)
+	verilator --lint-only -Wall --sv $(RTL_SOURCES) --top-module $(TOPLEVEL)
 
 $(BUILD):
 	mkdir -p $(BUILD)
 
-.PHONY: synth
 synth: $(SYNTH_JSON)
 
 $(SYNTH_JSON): $(RTL_SOURCES) | $(BUILD)
 	yosys -p "read_verilog -sv $(RTL_SOURCES); synth -top $(TOPLEVEL); write_json $(SYNTH_JSON)"
 
-.PHONY: synth_ice40
 synth_ice40: $(ICE40_JSON)
 
 $(ICE40_JSON): $(RTL_SOURCES) | $(BUILD)
 	yosys -p "read_verilog -sv $(RTL_SOURCES); synth_ice40 -top $(TOPLEVEL) -json $(ICE40_JSON)"
 
-
-.PHONY: python
-python: sim
-
-.PHONY: sv
-# sv: clean
-# 	iverilog $(COMPILE_ARGS) -s rgb2gray_tb -o sim_sv $(VERILOG_SOURCES) $(TB_SV)
-# 	vvp sim_sv
-
-
-
-.PHONY: abstract
-abstract:
-	netlistsvg $(ABSTRACT_JSON) -o $(BUILD)/$(TOPLEVEL).svg
-	@if command -v rsvg-convert >/dev/null 2>&1; then \
-		rsvg-convert -f pdf -o $(BUILD)/$(TOPLEVEL).pdf $(BUILD)/$(TOPLEVEL).svg; \
-	elif command -v inkscape >/dev/null 2>&1; then \
-		inkscape $(BUILD)/$(TOPLEVEL).svg --export-type=pdf --export-filename=$(BUILD)/$(TOPLEVEL).pdf; \
-	else \
-		echo 'warning: rsvg-convert or inkscape not found, skipping pdf export'; \
-	fi
+clean:
+	rm -rf $(BUILD) csrc simv* ucli.key *.vcd *.fst *.vpd xcelium.d xrun.* work transcript
