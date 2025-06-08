@@ -5,5 +5,9 @@
     "../sync_ram_1r1w/sync_ram_1r1w.sv",
     "../counter/counter.sv",
     "../elastic/elastic.sv"
+  ],
+  "test_top": "ramdelaybuffer_test",
+  "test_files": [
+    "ramdelaybuffer_test.sv"
   ]
 }
