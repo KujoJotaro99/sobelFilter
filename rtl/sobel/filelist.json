@@ -7,16 +7,8 @@
     "../ramdelaybuffer/ramdelaybuffer.sv",
     "../sync_ram_1r1w/sync_ram_1r1w.sv",
     "../counter/counter.sv",
-    "../fifo_sync/fifo_sync.sv",
     "../rgb2gray/rgb2gray.sv",
     "../magnitude/magnitude.sv",
-    "../elastic/elastic.sv",
-    "../sync2/sync2.sv",
-    "../../submodules/imports/SB_MAC16.sv",
-    "../../submodules/imports/axis_adapter.v",
-    "../../submodules/imports/uart.v",
-    "../../submodules/imports/uart_rx.v",
-    "../../submodules/imports/uart_tx.v",
-    "../../submodules/imports/SB_PLL40_PAD.sv"
+    "../elastic/elastic.sv"
   ]
 }

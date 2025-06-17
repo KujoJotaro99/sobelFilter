@@ -1,9 +1,9 @@
 SHELL := /bin/bash
 .SHELLFLAGS := -eu -o pipefail -c
 
-TOP := sobel
-RTL_DIR := ../../rtl/sobel
-FILELIST := $(RTL_DIR)/filelist.json
+TOP := icebreaker
+RTL_DIR := .
+FILELIST := filelist.json
 PCF := icebreaker.pcf
 BUILD := build
 LOGS := $(BUILD)/logs
