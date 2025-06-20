@@ -34,12 +34,17 @@ module sobel #(
 	logic signed [(2*WIDTH_P)-1:0] conv_gx;
 	logic signed [(2*WIDTH_P)-1:0] conv_gy;
 
+	logic [0:0] grad_valid;
+	logic [0:0] grad_ready;
+	logic signed [(2*WIDTH_P)-1:0] grad_gx;
+	logic signed [(2*WIDTH_P)-1:0] grad_gy;
+
 	logic [WIDTH_P-1:0] gx_abs;
 	logic [WIDTH_P-1:0] gy_abs;
 
 	// absolute gradient
-	assign gx_abs = conv_gx[2*WIDTH_P-1] ? -conv_gx : conv_gx;
-	assign gy_abs = conv_gy[2*WIDTH_P-1] ? -conv_gy : conv_gy;
+	assign gx_abs = grad_gx[2*WIDTH_P-1] ? -grad_gx : grad_gx;
+	assign gy_abs = grad_gy[2*WIDTH_P-1] ? -grad_gy : grad_gy;
 
 	// grayscale
 	rgb2gray #(
@@ -89,18 +94,32 @@ module sobel #(
 		.gy_o(conv_gy)
 	);
 
+	// register the gradients to split the sobel sum from the magnitude add
+	elastic #(
+		.WIDTH_P(4*WIDTH_P)
+	) grad_pipe_inst (
+		.clk_i(clk_i),
+		.rstn_i(rstn_i),
+		.data_i({conv_gx, conv_gy}),
+		.valid_i(conv_valid),
+		.ready_o(conv_ready),
+		.valid_o(grad_valid),
+		.data_o({grad_gx, grad_gy}),
+		.ready_i(grad_ready)
+	);
+
 	// gradient magnitude
 	magnitude #(
 		.WIDTH_P(WIDTH_P)
 	) magnitude_inst (
 		.clk_i(clk_i),
 		.rstn_i(rstn_i),
-		.valid_i(conv_valid),
+		.valid_i(grad_valid),
 		.ready_i(ready_i),
 		.gx_i(gx_abs),
 		.gy_i(gy_abs),
 		.valid_o(valid_o),
-		.ready_o(conv_ready),
+		.ready_o(grad_ready),
 		.mag_o(mag_o)
 	);
 
